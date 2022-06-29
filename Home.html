@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=width-device, initial-scale=1.0">
+    <title>Site Marchand</title>
+
+    <!--Bootstrap v5.0 css link-->
+    <link rel="stylesheet" href="bootstrap-5.0.2-dist/css/bootstrap.min.css">
+    <!--fontawesome cdn-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
+    <!--css link-->
+    <link rel="stylesheet" href="css/global.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!--custom script in html-->
+
+    <script>
+        $(document).ready(function() {
+
+            $(".fa-heart").click(function() {
+
+                if (($(this).parent().text()).includes('$')) {
+                    $nbre_prod = document.querySelector("nav #produits-fav").innerHTML;
+                    $prod = Number.parseInt($nbre_prod);
+                    if ((typeof($nbre_prod) == undefined) || (typeof($nbre_prod) == null) || (typeof($nbre_prod) == "") || (isNaN($nbre_prod))) $prod = 0;
+                    $img_path = $(this).closest(".col-md-6").find("img").attr("src")
+
+                    $prix = $(this).parent().text();
+                    $nom = $(this).parent().siblings("p").text();
+
+                    $favoris = `
+                    <div class="d-flex align-items-start justify-content-start">
+                        <img src=` + $img_path + ` alt="" class="img-fluid pe-3 w-25">
+                        <div>
+                            <p class="mb-20">` + $nom + `</p>
+                            <span>` + $prix + `
+                                
+                            </span>
+                        </div>
+                    </div>`;
+                    /*&nbsp&nbsp<i class="fas fa-cart-plus"></i>
+                                                    &nbsp&nbsp<i class="fas fa-calendar-times"></i>*/
+
+                    document.querySelector("#favorites div .col-md-6").insertAdjacentHTML('beforeend', $favoris);
+                    //document.querySelector("nav #produits-panier").insertAdjacentText("beforeend", $nbre_produits);
+                    alert("Le produit : " + $nom + ", de prix : " + $prix + " a été bien ajouté aux  favoris !");
+                    $prod += 1;
+                    $nbre_prod = "" + $prod;
+                    document.querySelector("nav #produits-fav").innerHTML = $nbre_prod;
+                } else {}
+            });
+
+            $(".btn-primary").click(function() {
+                $price = document.querySelector("#card .modal-body h2 span").innerHTML;
+
+                $price1 = $price.replace("$ ", "");
+                $price1 = parseFloat($price1);
+                if ((typeof($price1) == undefined) || (typeof($price1) == null) || (isNaN($price1))) $price1 = 0.0;
+
+                $nbre_prod = document.querySelector("nav #produits-panier").innerHTML;
+                $prod = Number.parseInt($nbre_prod);
+                if ((typeof($nbre_prod) == undefined) || (typeof($nbre_prod) == null) || (typeof($nbre_prod) == "") || (isNaN($nbre_prod))) $prod = 0;
+
+                $nom = $(this).siblings("p").text();
+                $prix = $(this).siblings("span").text();
+
+                $prix1 = $prix.replace("$ ", "");
+                $f_prix = 0.0;
+                //$f_prix = parseFloat($prix1);
+
+                $qte = prompt('De quelle quantité de ce produit avez-vous besoin ?', '1');
+                $qtes = parseInt($qte);
+                //$qtes = Math.ceil;
+                if ((typeof($qtes) == null) || (typeof($qtes) == undefined) || (isNaN($qtes)) || ($qtes <= 0)) {
+                    $qtes = 1;
+                }
+
+
+
+                $pr = $prix1 * $qtes;
+                $pr1 = $pr.toFixed(2);
+                $product = `
+                    <tr>
+                        <td><br></td>
+                        <td><br></td>
+                        <td><br></td>
+                    </tr>
+                    <tr class="text-muted" id="prod">
+                        <td>` + $nom + `</td>
+                        <td>
+                            <span style="padding: 0px 5px;">` + $qtes + `</span>
+                        </td>
+                        <td> $ ` + $pr1 + `</td>
+                        
+                    </tr>
+                `;
+                $prod += 1;
+                document.querySelector("#card table .text-muted").insertAdjacentHTML('afterend', $product);
+                //document.querySelector("nav #produits-panier").insertAdjacentText("beforeend", $nbre_produits);
+                alert("Le produit : " + $nom + ", de prix : " + $prix + " a été bien ajouté au panier !");
+                $f_prix = $pr + $price1;
+                $f_prix = $f_prix.toFixed(2);
+                $prix = "$ " + $f_prix;
+                $nbre_prod = "" + $prod;
+                document.querySelector("nav #produits-panier").innerHTML = $nbre_prod;
+                document.querySelector("#card .modal-body h2 span").innerHTML = $prix;
+                localStorage.setItem('prix_panier', $prix);
+            });
+            $(".fa-cart-plus").click(function() {
+                $nom = $(this).parent().siblings("p").text();
+                $prix = $(this).parent().text();
+
+                $price = document.querySelector("#card .modal-body h2 span").innerHTML;
+
+                $price1 = $price.replace("$ ", "");
+                $price1 = parseFloat($price1);
+                if ((typeof($price1) == undefined) || (typeof($price1) == null) || (isNaN($price1))) $price1 = 0.0;
+
+                $nbre_prod = document.querySelector("nav #produits-panier").innerHTML;
+                $prod = Number.parseInt($nbre_prod);
+                if ((typeof($nbre_prod) == undefined) || (typeof($nbre_prod) == null) || (typeof($nbre_prod) == "") || (isNaN($nbre_prod))) $prod = 0;
+
+                $prix1 = $prix.replace("$ ", "");
+                $f_prix = 0.0;
+                //$f_prix = parseFloat($prix1);
+
+                $qte = prompt('De quelle quantité de ce produit avez-vous besoin ?', '1');
+                $qtes = parseInt($qte);
+                //$qtes = Math.ceil;
+                if ((typeof($qtes) == null) || (typeof($qtes) == undefined) || (isNaN($qtes)) || ($qtes <= 0)) {
+                    $qtes = 1;
+                }
+
+                $pr = $prix1 * $qtes;
+                $pr1 = $pr.toFixed(2);
+                $product = `
+                    <tr>
+                        <td><br></td>
+                        <td><br></td>
+                        <td><br></td>
+                    </tr>
+                    <tr class="text-muted" id="prod">
+                        <td>` + $nom + `</td>
+                        <td>
+                            <span style="padding: 0px 5px;">` + $qtes + `</span>
+                        </td>
+                        <td> $ ` + $pr1 + `</td>
+                        
+                    </tr>
+                `;
+                $prod += 1;
+                document.querySelector("#card table .text-muted").insertAdjacentHTML('afterend', $product);
+                //document.querySelector("nav #produits-panier").insertAdjacentText("beforeend", $nbre_produits);
+                alert("Le produit : " + $nom + ", de prix : " + $prix + " a été bien ajouté au panier !");
+                $f_prix = $pr + $price1;
+                $f_prix = $f_prix.toFixed(2);
+                $prix = "$ " + $f_prix;
+                $nbre_prod = "" + $prod;
+                document.querySelector("nav #produits-panier").innerHTML = $nbre_prod;
+                document.querySelector("#card .modal-body h2 span").innerHTML = $prix;
+                localStorage.setItem('prix_panier', $prix);
+            });
+        });
+    </script>
+    <!--end custom script-->
+
+
+</head>
+
+<body onchange="_loadHome()">
+    <!--navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white py-4 fixed-top">
+        <div class="container">
+            <a id="navbar-brand" class="navbar-brand d-flex justify-content-between align-items-center order-lg-0" href="#">
+                <img src="images/site_icon.jpg" alt="site icon">
+                <span class="text-uppercase fw-lighter ms-2">Marchand</span>
+            </a>
+            <div class="order-lg-2 nav-btns">
+                <button type="button" class="btn position-relative" data-bs-toggle="modal" data-bs-target="#card">
+                    <i id="nav-fa" class="fa fa-shopping-cart"></i>
+                    <span id="produits-panier" class="position-absolute top-0 start-100 translate-middle badge bg-primary">0</span>
+                </button>
+                <button type="button" class="btn position-relative" data-bs-toggle="modal" data-bs-target="#favorites">
+                    <i id="nav-fa" class="fa fa-heart"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge bg-primary" id="produits-fav">0</span>
+                </button>
+                <button type="button" class="btn position-relative">
+                    <i id="nav-fa" class="fa fa-search"></i>
+                </button>
+            </div>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse order-lg-1" id="navMenu">
+                <ul class="navbar-nav mx-auto text-center">
+                    <li class="nav-item">
+                        <a class="nav-link px-2 py-2 text-dark" href="#header">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-2 py-2 text-dark" href="#popular">Populaires</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link  px-2 py-2 text-dark" href="#collection">Catégories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link  px-2 py-2 text-dark" href="#offers">Promotions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-2 py-2 text-dark" href="#aboutus">A propos de nous</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-2 py-2 text-dark" href="#help">Aide</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!--end of the navbar-->
+
+    <!--Header-->
+    <header id="header" class="vh-100 carousel slide" data-bs-ride="carousel" style="padding-top: 104px">
+        <div class="container h-100 d-flex align-items-center carousel-inner">
+            <div class="text-center carousel-item active">
+                <h2 class="text-capitalize text-white">Les produits populaires</h2>
+                <h1 class="text-uppercase py-2 fw-bold text-white">Tous vos meilleurs produits</h1>
+                <a href="#popular" class="btn mt-3 text-capitalize ">Acheter maintenant...</a>
+            </div>
+            <div class="text-center carousel-item">
+                <h2 class="text-capitalize text-white">Les meilleurs prix</h2>
+                <h1 class="text-uppercase py-2 fw-bold text-white">Produits pour tous</h1>
+                <a href="#promotion" class="btn mt-3 text-capitalize ">Acheter maintenant...</a>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#header" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#header" data-bs-slide="prev">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </header>
+    <!--end of header-->
+
+    <!--collections-->
+    <section id="collection" class="py-5">
+        <div class="container">
+            <div class="title text-center">
+                <h2 class="position-relative d-inline-block">Catégories</h2>
+            </div>
+            <div class="row g-0">
+                <div class="d-flex flex-wrap justify-content-center mt-5 filter-button-group">
+                    <button type="button" class="btn m-2 text-dark active-filter-btn" data-filter="*">Tous</button>
+                    <button type="button" class="btn m-2 text-dark" data-filter=".electronics">Electroniques</button>
+                    <button type="button" class="btn m-2 text-dark" data-filter=".clothes">Habits & Sports</button>
+                    <button type="button" class="btn m-2 text-dark" data-filter=".eats">Comestibles</button>
+                </div>
+                <div class="collections-list mt-4 row gx-0 gy-3">
+                    <div class="col-md-6 col-lg-4 col-xl-3 p-2 clothes">
+                        <div class="collections-img">
+                            <img src="images/basket-roue_noir.jpg" alt="baskets" class="w-100">
+                        </div>
+                        <div class="text-center">
+                            <div class="rating mt-3">
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-capitalize my-1">Baskets</p>
+                                <span class="fw-bold">$ 65.46
+                                &nbsp&nbsp<i class="far fa-heart"></i>
+                            </span><br>
+                                <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 p-2 clothes">
+                        <div class="collections-img">
+                            <img src="images/pull_bleu.jpg" alt="pull" class="w-100">
+                        </div>
+                        <div class="text-center">
+                            <div class="rating mt-3">
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star-half"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-capitalize my-1">Pull over</p>
+                                <span class="fw-bold">$ 7.65
+                                &nbsp&nbsp<i class="far fa-heart"></i>
+                            </span><br>
+                                <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 p-2 eats">
+                        <div class="collections-img">
+                            <img src="images/Chocolate-Cake.jpg" alt="cake" class="w-100">
+                        </div>
+                        <div class="text-center">
+                            <div class="rating mt-3">
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star-half"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-capitalize my-1">Gâteau au chocolat</p>
+                                <span class="fw-bold">$ 19.65
+                                &nbsp&nbsp<i class="far fa-heart"></i>
+                            </span><br>
+                                <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 p-2 electronics">
+                        <div class="collections-img">
+                            <img src="images/dell_computer.jpg" alt="DELL Computer" class="w-100">
+                        </div>
+                        <div class="text-center">
+                            <div class="rating mt-3">
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-capitalize my-1">Ordinateur DELL</p>
+                                <span class="fw-bold">$ 224.65
+                                &nbsp&nbsp<i class="far fa-heart"></i>
+                            </span><br>
+                                <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 p-2 electronics">
+                        <div class="collections-img">
+                            <img src="images/watch_phone.jpg" alt="Watch phone" class="w-100">
+                        </div>
+                        <div class="text-center">
+                            <div class="rating mt-3">
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-capitalize my-1">Téléphone en montre</p>
+                                <span class="fw-bold">$ 65.46
+                                &nbsp&nbsp<i class="far fa-heart"></i>
+                            </span><br>
+                                <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 p-2 eats">
+                        <div class="collections-img">
+                            <img src="images/sand-wich.jpg" alt="Sandwich" class="w-100">
+                        </div>
+                        <div class="text-center">
+                            <div class="rating mt-3">
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-capitalize my-1">Sandwich à la viande de boeuf</p>
+                                <span class="fw-bold">$ 2.99
+                                &nbsp&nbsp<i class="far fa-heart"></i>
+                            </span><br>
+                                <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 p-2 electronics">
+                        <div class="collections-img">
+                            <img src="images/apple-iphone-6s.png" alt="iphone" class="w-100">
+                        </div>
+                        <div class="text-center">
+                            <div class="rating mt-3">
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-capitalize my-1">iPhone 6s</p>
+                                <span class="fw-bold">$ 135.64
+                                &nbsp&nbsp<i class="far fa-heart"></i>
+                            </span><br>
+                                <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 p-2 clothes">
+                        <div class="collections-img">
+                            <img src="images/c_sac_tallons.png" alt="sac et talons" class="w-100">
+                        </div>
+                        <div class="text-center">
+                            <div class="rating mt-3">
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star-half"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-capitalize my-1">Sac et chaussures</p>
+                                <span class="fw-bold">$ 38.65
+                                &nbsp&nbsp<i class="far fa-heart"></i>
+                            </span><br>
+                                <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 p-2 electronics">
+                        <div class="collections-img">
+                            <img src="images/samsung-galaxy-z-flip.png" alt="Watch phone" class="w-100">
+                        </div>
+                        <div class="text-center">
+                            <div class="rating mt-3">
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-capitalize my-1">Samsung galaxy Z</p>
+                                <span class="fw-bold">$ 1750.46
+                                &nbsp&nbsp<i class="far fa-heart"></i>
+                            </span><br>
+                                <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 p-2 eats">
+                        <div class="collections-img">
+                            <img src="images/yaourt-dolait-500g.jpg" alt="yaourt" class="w-100">
+                        </div>
+                        <div class="text-center">
+                            <div class="rating mt-3">
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-capitalize my-1">Yaourt dolait</p>
+                                <span class="fw-bold">$ 1.65
+                                &nbsp&nbsp<i class="far fa-heart"></i>
+                            </span><br>
+                                <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 p-2 clothes">
+                        <div class="collections-img">
+                            <img src="images/basket-ball-nba.jpg" alt="baskets" class="w-100">
+                        </div>
+                        <div class="text-center">
+                            <div class="rating mt-3">
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-capitalize my-1">Balle de basket</p>
+                                <span class="fw-bold">$ 23.46
+                                &nbsp&nbsp<i class="far fa-heart"></i>
+                            </span><br>
+                                <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 p-2 clothes">
+                        <div class="collections-img">
+                            <img src="images/pull_homme.jpg" alt="pull" class="w-100">
+                        </div>
+                        <div class="text-center">
+                            <div class="rating mt-3">
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-capitalize my-1">Pull over</p>
+                                <span class="fw-bold">$ 9.34
+                                &nbsp&nbsp<i class="far fa-heart"></i>
+                            </span><br>
+                                <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 p-2 eats">
+                        <div class="collections-img">
+                            <img src="images/Fresh-Chocolate-Cake.jpg" alt="cake" class="w-100">
+                        </div>
+                        <div class="text-center">
+                            <div class="rating mt-3">
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-capitalize my-1">Gâteau au chocolat</p>
+                                <span class="fw-bold">$ 17.47
+                                &nbsp&nbsp<i class="far fa-heart"></i>
+                            </span><br>
+                                <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 p-2 electronics">
+                        <div class="collections-img">
+                            <img src="images/watch-black-and-white.png" alt="DELL Computer" class="w-100">
+                        </div>
+                        <div class="text-center">
+                            <div class="rating mt-3">
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star-half"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-capitalize my-1">Montre</p>
+                                <span class="fw-bold">$ 59.65
+                                &nbsp&nbsp<i class="far fa-heart"></i>
+                            </span><br>
+                                <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 p-2 electronics">
+                        <div class="collections-img">
+                            <img src="images/black-watch.jpg" alt="Watch phone" class="w-100">
+                        </div>
+                        <div class="text-center">
+                            <div class="rating mt-3">
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star-half"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-capitalize my-1">Montre</p>
+                                <span class="fw-bold">$ 45.46
+                                &nbsp&nbsp<i class="far fa-heart"></i>
+                            </span><br>
+                                <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 p-2 clothes">
+                        <div class="collections-img">
+                            <img src="images/premiere-league-cup-ball.jpg" alt="foot-ball" class="w-100">
+                        </div>
+                        <div class="text-center">
+                            <div class="rating mt-3">
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star-half"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-capitalize my-1">Balle de première league</p>
+                                <span class="fw-bold">$ 27.99
+                                &nbsp&nbsp<i class="far fa-heart"></i>
+                            </span><br>
+                                <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 p-2 electronics">
+                        <div class="collections-img">
+                            <img src="images/samsung-galaxy-s8.png" alt="iphone" class="w-100">
+                        </div>
+                        <div class="text-center">
+                            <div class="rating mt-3">
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star-half"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-capitalize my-1">Samsung galaxy S8</p>
+                                <span class="fw-bold">$ 155.64
+                                &nbsp&nbsp<i class="far fa-heart"></i>
+                            </span><br>
+                                <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 p-2 clothes">
+                        <div class="collections-img">
+                            <img src="images/couple_sac_tallons.webp" alt="sac et talons" class="w-100">
+                        </div>
+                        <div class="text-center">
+                            <div class="rating mt-3">
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star-half"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-capitalize my-1">Sac et chaussures</p>
+                                <span class="fw-bold">$ 31.65
+                                &nbsp&nbsp<i class="far fa-heart"></i>
+                            </span><br>
+                                <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 p-2 electronics">
+                        <div class="collections-img">
+                            <img src="images/iphone-6s.png" alt="Watch phone" class="w-100">
+                        </div>
+                        <div class="text-center">
+                            <div class="rating mt-3">
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star-half"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-capitalize my-1">iPhone 6S</p>
+                                <span class="fw-bold">$ 98.46
+                                &nbsp&nbsp<i class="far fa-heart"></i>
+                            </span><br>
+                                <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-xl-3 p-2 clothes">
+                        <div class="collections-img">
+                            <img src="images/t-shirt.jpg" alt="t-shirt" class="w-100">
+                        </div>
+                        <div class="text-center">
+                            <div class="rating mt-3">
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star"></i></span>
+                                <span class="text-primary"><i class="fas fa-star-half"></i></span>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-capitalize my-1">t-shirt rouge</p>
+                                <span class="fw-bold">$ 8.65
+                                    &nbsp&nbsp<i class="far fa-heart"></i>
+                                </span><br>
+                                <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--end of collections-->
+
+    <!--popular-->
+    <section id="popular" class="py-5">
+        <div class="container">
+            <div class="title text-center py-5">
+                <h2 class="position-relative d-inline-block">Produits populaires</h2>
+            </div>
+            <div class="special-list row g-0">
+                <div class="col-md-6 col-lg-4 col-xl-3 p-2">
+                    <div class="special-img position-relative overflow-hidden">
+                        <img src="images/cookies.png" class="w-100">
+                        <span class="position-absolute d-flex align-items-center justify-content-center text-primary fs-4">
+                            <i class="fas fa-heart"></i>
+                        </span>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-capitalize mt-3 mb-1">Cookies</p>
+                        <span class="fe-bold d-block">$ 3.45
+                            &nbsp&nbsp<i class="far fa-heart"></i>
+                        </span>
+                        <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 col-xl-3 p-2">
+                    <div class="special-img position-relative overflow-hidden">
+                        <img src="images/sport-pull.jpg" class="w-100">
+                        <span class="position-absolute d-flex align-items-center justify-content-center text-primary fs-4">
+                            <i class="fas fa-heart"></i>
+                        </span>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-capitalize mt-3 mb-1">Habit de sport</p>
+                        <span class="fe-bold d-block">$ 18.14
+                            &nbsp&nbsp<i class="far fa-heart"></i>
+                        </span>
+                        <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 col-xl-3 p-2">
+                    <div class="special-img position-relative overflow-hidden">
+                        <img src="images/watch-blue.jpg" class="w-100">
+                        <span class="position-absolute d-flex align-items-center justify-content-center text-primary fs-4">
+                            <i class="fas fa-heart"></i>
+                        </span>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-capitalize mt-3 mb-1">Montre</p>
+                        <span class="fe-bold d-block">$ 47.45
+                            &nbsp&nbsp<i class="far fa-heart"></i>
+                        </span>
+                        <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 col-xl-3 p-2">
+                    <div class="special-img position-relative overflow-hidden">
+                        <img src="images/hamburger.png" class="w-100">
+                        <span class="position-absolute d-flex align-items-center justify-content-center text-primary fs-4">
+                            <i class="fas fa-heart"></i>
+                        </span>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-capitalize mt-3 mb-1">Hamburger</p>
+                        <span class="fe-bold d-block">$ 4.75
+                            &nbsp&nbsp<i class="far fa-heart"></i>
+                        </span>
+                        <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 col-xl-3 p-2">
+                    <div class="special-img position-relative overflow-hidden">
+                        <img src="images/red-dress.png" class="w-100">
+                        <span class="position-absolute d-flex align-items-center justify-content-center text-primary fs-4">
+                            <i class="fas fa-heart"></i>
+                        </span>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-capitalize mt-3 mb-1">Robe-femmes</p>
+                        <span class="fe-bold d-block">$ 28.37
+                            &nbsp&nbsp<i class="far fa-heart"></i>
+                        </span>
+                        <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 col-xl-3 p-2">
+                    <div class="special-img position-relative overflow-hidden">
+                        <img src="images/sac-à-main-et-chaussure-jaunes.jpg" class="w-100">
+                        <span class="position-absolute d-flex align-items-center justify-content-center text-primary fs-4">
+                            <i class="fas fa-heart"></i>
+                        </span>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-capitalize mt-3 mb-1">Paires d'outils</p>
+                        <span class="fe-bold d-block">$ 48.6
+                            &nbsp&nbsp<i class="far fa-heart"></i>
+                        </span>
+                        <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 col-xl-3 p-2">
+                    <div class="special-img position-relative overflow-hidden">
+                        <img src="images/ball-foot.jpg" class="w-100">
+                        <span class="position-absolute d-flex align-items-center justify-content-center text-primary fs-4">
+                            <i class="fas fa-heart"></i>
+                        </span>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-capitalize mt-3 mb-1">Balle NIKE pour league</p>
+                        <span class="fe-bold d-block">$ 73.45
+                            &nbsp&nbsp<i class="far fa-heart"></i>
+                        </span>
+                        <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 col-xl-3 p-2">
+                    <div class="special-img position-relative overflow-hidden">
+                        <img src="images/basket_noire.webp" class="w-100">
+                        <span class="position-absolute d-flex align-items-center justify-content-center text-primary fs-4">
+                            <i class="fas fa-heart"></i>
+                        </span>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-capitalize mt-3 mb-1">Basket NBA star noir</p>
+                        <span class="fe-bold d-block">$ 83.45
+                            &nbsp&nbsp<i class="far fa-heart"></i>
+                        </span>
+                        <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 col-xl-3 p-2">
+                    <div class="special-img position-relative overflow-hidden">
+                        <img src="images/basket_noir-rouge.png" class="w-100">
+                        <span class="position-absolute d-flex align-items-center justify-content-center text-primary fs-4">
+                            <i class="fas fa-heart"></i>
+                        </span>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-capitalize mt-3 mb-1">Basket NBA star red</p>
+                        <span class="fe-bold d-block">$ 85.05
+                            &nbsp&nbsp<i class="far fa-heart"></i>
+                        </span>
+                        <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 col-xl-3 p-2">
+                    <div class="special-img position-relative overflow-hidden">
+                        <img src="images/black-cloth.jpg" class="w-100">
+                        <span class="position-absolute d-flex align-items-center justify-content-center text-primary fs-4">
+                            <i class="fas fa-heart"></i>
+                        </span>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-capitalize mt-3 mb-1">Robe-femmes noire</p>
+                        <span class="fe-bold d-block">$ 38.45
+                            &nbsp&nbsp<i class="far fa-heart"></i>
+                        </span>
+                        <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 col-xl-3 p-2">
+                    <div class="special-img position-relative overflow-hidden">
+                        <img src="images/basket-ball-spal.jpg" class="w-100">
+                        <span class="position-absolute d-flex align-items-center justify-content-center text-primary fs-4">
+                            <i class="fas fa-heart"></i>
+                        </span>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-capitalize mt-3 mb-1">Balle SPALDING</p>
+                        <span class="fe-bold d-block">$ 73.45
+                            &nbsp&nbsp<i class="far fa-heart"></i>
+                        </span>
+                        <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 col-xl-3 p-2">
+                    <div class="special-img position-relative overflow-hidden">
+                        <img src="images/black-shoes.jpg" class="w-100">
+                        <span class="position-absolute d-flex align-items-center justify-content-center text-primary fs-4">
+                            <i class="fas fa-heart"></i>
+                        </span>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-capitalize mt-3 mb-1">Chaussure-Hommes</p>
+                        <span class="fe-bold d-block">$ 48.45
+                            &nbsp&nbsp<i class="far fa-heart"></i>
+                        </span>
+                        <a href="#" class="btn btn-primary mt-3">Ajouter au panier...</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--end of popular-->
+
+    <!--blogs-->
+    <section id="offers" class="py-5">
+        <div class="container">
+            <div class="row d-flex align-items-center justify-content-center text-center justify-content-lg-start text-lg-start">
+                <div class="offers-content">
+                    <span class="text-white">Obtenez des réductions jusqu'à 40%</span>
+                    <h2 class="mt-2 mb-4 text-white">Grandes offres sur nos produits !</h2>
+                    <a href="#promotion" class="btn">J'obtiens l'offre...</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--end of blogs-->
+
+    <!--help-->
+    <section id="help" class="py-5">
+        <div class="container">
+            <div class="row gy-lg-5 align-items-center">
+                <div class="col-lg-6 order-lg-1 text-center text-lg-start">
+                    <div class="title pt-3 pb-5">
+                        <h2 class="position-relative d-inline-block ms-4">
+                            Aide
+                        </h2>
+                    </div>
+
+                    <p class="lead text-muted">Marchand est une solution pour tous, plus besoin d'aller chercher ailleurs.</p>
+                    <p class="">En optant pour le site Marchand, vous choisissez de vous simplifier la vie ; de chez-vous vous pouvez consulter nos produits en stock, les offres et réductions, construire des panier librement, passer des commandes si vous désirez,
+                        payer avec votre système de payement local et obtenir des chances de livraison à domicile.</p>
+
+                </div>
+                <div class="col-lg-6 order-lg-0">
+                    <img src="images/payement_2.jpg" alt="" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--end of help-->
+
+    <!--about us-->
+    <section id="aboutus" class="py-5">
+        <div class="container">
+            <div class="row gy-lg-5 align-items-center">
+                <div class="col-lg-6 order-lg-1 text-center text-lg-start">
+                    <div class="title pt-3 pb-5">
+                        <h2 class="position-relative d-inline-block ms-4">
+                            A propos de nous
+                        </h2>
+                    </div>
+
+                    <p class="lead text-muted">Le site Marchand a été réalisé un "ingénieur" du Génie Logiciel pendant un stage académique en entreprise.</p>
+                    <p class="">Ayant des connaissances en informatique, notamment dans les langages de programmation tels que java, c, c++, assembleur, python, pascal, javascript, php, sql, etc; des connaissances en traitement d'images vidéos et sons, etc; quelques
+                        connaissances en réseau, équipement-réseaux, entrepreunariat, bureautique (saisie et traitement de texte), comptabilité (avec le progiciel SAGE 100) et en gestion de projets. <br> Maîtrise convenable du français et de l'anglais
+                        et avec pour loisirs la lecture des romans, oeuvres philosophiques, la pratique des sports tels que le basket-ball et le football, la musique et le cinéma, mais surtout le développement des sites Web, applications mobiles et ordinateurs.
+                        <br><br>N'hésitez pas à&nbsp
+                        <a href="#footer">nous contacter</a>&nbsp pour tout besoin ou suggestion.
+                    </p>
+
+                </div>
+                <div class="col-lg-6 order-lg-0">
+                    <img src="images/image-cv-2021.jpg" alt="" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--end about us-->
+
+    <!--promotions and best of the year-->
+    <section id="promotion" class="py-5">
+        <div class="container">
+            <div class="title text-center pt-3 pb-5">
+                <h2 class="position-relative d-inline-block ms-4">Offres et meilleurs achats du mois</h2>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-lg-4 row g-3">
+                    <h3 class="fs-5">Meilleurs achats du mois</h3>
+
+                    <div class="d-flex align-items-start justify-content-start">
+                        <img src="images/hamburger.png" alt="" class="img-fluid pe-3 w-50">
+                        <div>
+                            <p class="mb-20">Hamburger</p>
+                            <span>$ 4.75
+                                &nbsp&nbsp<i class="fas fa-cart-plus"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start justify-content-start">
+                        <img src="images/yaourt-dolait-500g.jpg" alt="" class="img-fluid pe-3 w-50">
+                        <div>
+                            <p class="mb-20">Yaourt DOLAIT</p>
+                            <span>$ 1.65
+                                &nbsp&nbsp<i class="fas fa-cart-plus"></i>
+                            </span>
+                        </div>
+                    </div>
+
+
+                    <div class="d-flex align-items-start justify-content-start">
+                        <img src="images/basket_noir-rouge.png" alt="" class="img-fluid pe-3 w-50">
+                        <div>
+                            <p class="mb-20">Basket</p>
+                            <span>$ 84.05
+                                &nbsp&nbsp<i class="fas fa-cart-plus"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start justify-content-start">
+                        <img src="images/watch-blue.jpg" alt="" class="img-fluid pe-3 w-50">
+                        <div>
+                            <p class="mb-20">Montre bleu</p>
+                            <span>$ 47.45
+                                &nbsp&nbsp<i class="fas fa-cart-plus"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 col-lg-4 row g-3">
+                    <h3 class="fs-5">Réductions sur nos produits</h3>
+                    <div class="d-flex align-items-start justify-content-start">
+                        <img src="images/samsung-galaxy-z-flip.png" alt="" class="img-fluid pe-3 w-50">
+
+                        <div>
+                            <p class="mb-20">Samsung galaxy</p>
+                            <h4>-40%</h4>
+                            <span><s style="color: #f00;">$ 1750.46</s><br></span>
+                            <span>$ 1050.28
+                                &nbsp&nbsp<i class="fas fa-cart-plus"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start justify-content-start">
+                        <img src="images/basket-ball-spal.jpg" alt="" class="img-fluid pe-3 w-50">
+
+                        <div>
+                            <p class="mb-20">Balle SPALDING</p>
+                            <h4>-31%</h4>
+                            <span><s style="color: #f00;">$ 73.45</s><br></span>
+                            <span>$ 45.54
+                                &nbsp&nbsp<i class="fas fa-cart-plus"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start justify-content-start">
+                        <img src="images/watch_phone.jpg" alt="" class="img-fluid pe-3 w-50">
+
+                        <div>
+                            <p class="mb-20">Téléphone en montre</p>
+                            <h4>-22%</h4>
+                            <span><s style="color: #f00;">$ 65.46</s><br></span>
+                            <span>$ 51.06
+                                &nbsp&nbsp<i class="fas fa-cart-plus"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start justify-content-start">
+                        <img src="images/basket-roue_noir.jpg" alt="" class="img-fluid pe-3 w-50">
+
+                        <div>
+                            <p class="mb-20">Basket rouge-noire</p>
+                            <h4>-14%</h4>
+                            <span><s style="color: #f00;">$ 65.46</s><br></span>
+                            <span>$ 56.30
+                                &nbsp&nbsp<i class="fas fa-cart-plus"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4 row g-3">
+                    <h3 class="fs-5">Offres pour achats de nos produits</h3>
+                    <div class="d-flex align-items-start justify-content-start">
+                        <img src="images/double-yaourt.png" alt="" class="img-fluid pe-3 w-50">
+
+                        <div>
+                            <p class="mb-20">Double Yaourt</p>
+                            <span>$ 2.48
+                                &nbsp&nbsp<i class="fas fa-cart-plus"></i>
+                            </span>
+                            <h5>Seulement</h5>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start justify-content-start">
+                        <img src="images/mix-produits.jpg" alt="" class="img-fluid pe-3 w-50">
+
+                        <div>
+                            <p class="mb-20">Une SPALDING et une balle de foot</p>
+                            <span>$ 91.54
+                                &nbsp&nbsp<i class="fas fa-cart-plus"></i>
+                            </span>
+                            <h5>Seulement</h5>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start justify-content-start">
+                        <img src="images/trois-burgers.png" alt="" class="img-fluid pe-3 w-50">
+
+                        <div>
+                            <p class="mb-20">Tripple burger</p>
+                            <span>$ 11.06
+                                &nbsp&nbsp<i class="fas fa-cart-plus"></i>
+                            </span>
+                            <h5>Seulement</h5>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-start justify-content-start">
+                        <img src="images/trois-montres.png" alt="" class="img-fluid pe-3 w-50">
+
+                        <div>
+                            <p class="mb-20">Trois montres de choix</p>
+                            <span>$ 136.49
+                                &nbsp&nbsp<i class="fas fa-cart-plus"></i>
+                            </span>
+                            <h5>Seulement</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--end promotions-->
+
+    <!--newsletter-->
+    <section id="newsletter" class="py-5">
+        <div class="container">
+            <div class="d-flex flex-column align-items-center justify-content-center">
+                <div class="title text-center pt-3 pb-5">
+                    <h2 class="position-relative d-inline-block ms-4">
+                        Souscription aux notifications
+                    </h2>
+                </div>
+                <p class="text-center text-muted">Souscrivez aux notifications en fournissant votre adresse e-mail, pour bénéficier des informations de nouvelle promotions et réductions, des produits populaires, des nouveaux produits sur le marché, etc...</p>
+                <div class="input-group mb-3 mt-3">
+                    <input type="email" class="form-control" placeholder="Entrez votre adresse e-mail..." required>
+                    <button class="btn btn-primary" type="submit">Souscrire</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!--end newsletter-->
+
+    <!--footer-->
+    <footer class="bg-dark py-5" id="footer">
+        <div class="container">
+            <div class="row text-white g-4">
+                <div class="col-md-6 col-lg-3">
+                    <a href="Home.html" class="text-uppercase text-decoration-none brand text-white">marchand</a>
+                    <p class="text-white text-muted mt-3">Marchand est un site de vente de produits en ligne; vous pouvez y trouver tous les produits de vos choix et à tous les prix, mais surtout vous avez la possibilié d'y passer vos commandes et régler vos factures.</p>
+                    <a href="#footer" class="text-white text-decoration-none ">
+                        <i class="fas fa-chevron-right me-1"></i> Téléchargez notre app-mobile...
+                    </a><br><br>
+                    <a href="https://play.google.com/store/apps/details?id=com.waaza.faroty" class="text-white text-decoration-none">
+                        <i class="fas fa-chevron-right me-1"></i> Téléchargez l'app-mobile Faroty...
+                    </a>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <h5 class="fw-light">Liens du site</h5>
+                    <ul class="">
+                        <li class="my-3">
+                            <a href="#" class="text-white text-decoration-none text-muted">
+                                <i class="fas fa-chevron-right me-1"></i> Accueil
+                            </a>
+                        </li>
+                        <li class="my-3">
+                            <a href="#popular" class="text-white text-decoration-none text-muted">
+                                <i class="fas fa-chevron-right me-1"></i> Populaires
+                            </a>
+                        </li>
+                        <li class="my-3">
+                            <a href="#collection" class="text-white text-decoration-none text-muted">
+                                <i class="fas fa-chevron-right me-1"></i> Catégories
+                            </a>
+                        </li>
+                        <li class="my-3">
+                            <a href="#offers" class="text-white text-decoration-none text-muted">
+                                <i class="fas fa-chevron-right me-1"></i> Promotions
+                            </a>
+                        </li>
+                        <li class="my-3">
+                            <a href="#aboutus" class="text-white text-decoration-none text-muted">
+                                <i class="fas fa-chevron-right me-1"></i> A propos de nous
+                            </a>
+                        </li>
+                        <li class="my-3">
+                            <a href="#help" class="text-white text-decoration-none text-muted">
+                                <i class="fas fa-chevron-right me-1"></i> Aide
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <h5 class="fw-light mb-3">Contactez-nous</h5>
+                    <div class="d-flex justify-content-start align-items-start my-2 text-muted">
+                        <span class="">
+                            <i class="fas fa-map-marked-alt"></i>
+                        </span>
+                        <span class="fw-light">&nbsp
+                            Bandjoun, KOUNG-KHI, Ouest, CAMEROUN
+                        </span>
+                    </div>
+                    <div class="d-flex justify-content-start align-items-start my-2 text-muted">
+                        <span class="">
+                            <i class="fas fa-envelope"></i>
+                        </span>
+                        <span class="fw-light">&nbsp
+                            josemonro067@gmail.com
+                        </span>
+                    </div>
+                    <div class="d-flex justify-content-start align-items-start my-2 text-muted">
+                        <span class="">
+                            <i class="fas fa-phone-alt"></i>
+                        </span>
+                        <span class="fw-light">&nbsp
+                            +237 693429861 / +237 676764065
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <h5 class="fw-light mb-3"> Suivez-nous </h5>
+                    <div class="d-flex">
+                        <ul class="list-unstyled">
+                            <li>
+                                <a href="#" class="text-white text-decoration-none text-muted">
+                                    <i class="fab fa-facebook-f fs-4 me-4"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="text-white text-decoration-none text-muted">
+                                    <i class="fab fa-twitter fs-4 me-4"></i>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="text-white text-decoration-none text-muted">
+                                    <i class="fab fa-instagram fs-4 me-4"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!--end footer-->
+
+    <!--Modal for card-->
+    <section class="modal fade" id="card" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" style="font-size: 35px;">Votre panier</h4>
+                    <i class="close fas fa-times" data-bs-dismiss="modal"></i>
+                </div>
+                <div class="modal-body">
+                    <table align="center" style="align-items: center;">
+                        <tr>
+                            <td style=" font-size: 20px;">Produit</td>
+                            <td style=" font-size: 20px; padding-left: 5px;">Quantité</td>
+                            <td style=" font-size: 20px; padding-left: 5px;">Total</td>
+                            <!--
+                            <td style=" font-size: 20px; padding-left: 20px;">
+                                &times;
+                            </td>-->
+                        </tr>
+                        <tr class="text-muted">
+                            <td><br></td>
+                            <td><br></td>
+                            <td><br></td>
+                            <!--
+                            <td><br></td>-->
+                        </tr>
+                        <!--
+                        <tr class="text-muted">
+                            <td>Yaourt double</td>
+                            <td>
+                                <i class="fas fa-minus-circle"></i>
+                                <span style="padding: 0px 5px;">1</span>
+                                <i class="fas fa-plus-circle"></i>
+                            </td>
+                            <td>$ 2.48</td>
+                            <td>
+                                <i data-bs-dismiss="text-muted" class="fas fa-times"></i>
+                            </td>
+                        </tr>-->
+                    </table><br>
+                    <h2 style="font-size: 25px; color: #090 ; text-align: center;">Prix total panier :
+                        <span></span>
+                    </h2>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <a href="Payement_form.html" target="_parent">
+                        <button type="button" class="btn btn-default" data-bs-dismiss="modal">passer la commande...</button>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <!--end Modal-->
+
+    <!--Modal for favorite-->
+    <section class="modal fade" id="favorites" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" style="font-size: 35px;">Vos favoris</h4>
+                    <i class="fas fa-heart" style="color: rgb(235, 164, 176);"></i>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-6 col-lg-4 row g-3">
+
+
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">fermer...</button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <!--end favorite-->
+
+    <!--add panel-->
+    <section class="modal fade" id="addingcard" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" style="font-size: 35px;">Ajout au panier</h4>
+                    <i class="close fas fa-times" data-bs-dismiss="modal"></i>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-6 col-lg-4 row g-3">
+
+                    </div>
+                    <div class="text-center"><br>
+                        <span class="fw-bold">Quelle quantité de ce produit voulez-vous ?</span><br><br>
+                        <input type="number" name="" id="qte_prod" placeholder="1" min="1" required/>
+                    </div><br><br>
+                    <h2 style="font-size: 25px; color: #009 ; text-align: center;">Prix total à ajouter :
+                        <span></span>
+                    </h2>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <a href="#">
+                        <button type="button" class="btn btn-default" data-bs-dismiss="modal">enregister...</button>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <!--end adding panel-->
+
+    <!--JQuery 3.6.0 js-->
+    <script src="js/jquery-3.6.0.js"></script>
+    <!-- isotope js-->
+    <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.js"></script>
+    <!--Bootstrap v5.0 js link-->
+    <script src="bootstrap-5.0.2-dist/js/bootstrap.min.js"></script>
+    <!--custom script js-->
+    <script src="js/script.js"></script>
+</body>
+
+</html>

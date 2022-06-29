@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=width-device, initial-scale=1.0">
+    <title>Payement</title>
+
+    <!--Bootstrap v5.0 css link-->
+    <link rel="stylesheet" href="bootstrap-5.0.2-dist/css/bootstrap.min.css">
+    <!--fontawesome cdn-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
+    <!--css link-->
+    <link rel="stylesheet" href="css/payement.css">
+
+    <!--custom script-->
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js">
+    </script>
+    <script>
+        function _loadPay(amount_pay1, nom1, compte1, pay_type1) {
+            $.ajax({
+                url: "_API_payement/_Payement.php",
+                type: "post",
+                dataType: "json",
+                data: {
+                    event: "success",
+                    amount: amount_pay1,
+                    nam: nom1,
+                    account: compte1,
+                    paymenttype: pay_type1
+                },
+                success: function(result) {
+                    //alert(result.error);
+                }
+            });
+            alert('Requête de transaction initiée...');
+            if (pay_type1 === 'om') {
+                alert("Vérifiez votre mobile et tapez #150# pour  valider le payement...");
+            }
+            if (pay_type1 === 'momo') {
+                alert("Vérifiez votre mobile et tapez *126# pour  valider le payement...");
+            }
+            location.href = "Home.html";
+        }
+
+        function validation() {
+
+            noms = document.getElementById('nom').value;
+            ville = document.getElementById('ville').value;
+            adresse = document.getElementById('email').value;
+            //tel = document.getElementById('tel').value;
+            moyen1 = document.getElementById("paymentOM").checked;
+            moyen2 = document.getElementById("paymentPAY").checked;
+            compte = document.getElementById('pay-card').value;
+            total = document.querySelector('#card-price').innerHTML;
+            total = total.replace('$', '');
+            total = total.trim();
+            amount_pay = parseFloat(total);
+            amount_pay *= 620;
+            amount_pay = Math.ceil(amount_pay);
+
+
+            if ((noms.trim() != "") && (ville.trim() != "") && (adresse.trim() != "") && (compte.trim() != "")) {
+                if ((adresse.includes('@')) && (adresse.includes('.'))) {
+                    if (adresse.indexOf('@', 0) > 0) {
+
+                        if (moyen1) {
+                            if ((compte.startsWith('655') || compte.startsWith('656') || compte.startsWith('657') || compte.startsWith('658') || compte.startsWith('659') || compte.startsWith('69')) && (compte.length == 9) && (!compte.includes('.')) && (!compte.includes('-'))) {
+                                alert('Bien enregistré, le payement est en cours de validation');
+                                _loadPay(amount_pay, noms, compte, 'om');
+                                return;
+                            } else {
+                                alert('Veuillez bien remplir le champ du compte Orange Money de payement SVP (9 chiffres, sans espace vide ni trait d\'union)');
+                                return;
+                            }
+                        }
+                        if (moyen2) {
+                            if ((compte.startsWith('650') || compte.startsWith('651') || compte.startsWith('652') || compte.startsWith('653') || compte.startsWith('654') || compte.startsWith('67')) && (compte.length == 9) && (!compte.includes('.')) && (!compte.includes('-'))) {
+                                alert('Bien enregistré, le payement est en cours de validation');
+                                _loadPay(amount_pay, noms, compte, 'momo');
+                                return;
+                            } else {
+                                alert('Veuillez bien remplir le champ du compte MTN Momo de payement SVP (9 chiffres, sans espace vide ni trait d\'union)');
+                                return;
+                            }
+                        } else {
+                            alert('Veuillez bien choisir une méthode de payement SVP');
+                            return;
+                        }
+
+                    } else {
+                        alert('Veuillez entrer une adresse email valide SVP');
+                        return;
+                    }
+                } else {
+                    alert('Veuillez bien remplir le champ de l\'adresse email SVP');
+                    return;
+                }
+            } else {
+                alert('Veuillez bien remplir les champs du formulaire SVP');
+                return;
+            }
+        }
+    </script>
+    <!--
+    <script src="js/script2.js"></script>-->
+    <script src="js/script.js"></script>
+
+    <script>
+    </script>
+</head>
+
+<body onload="_loadPayment()">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-7 page-first-info">
+                <h1 class="text-left">Payement des produits</h1>
+                <p class="text-left">Nous utilisons les APIs que nous fournissent Faroty pour vos payements ; pour cela, nous avons besoins de toutes vos informations suivantes pour valider votre commande et sécuriser votre payement. <br><br> Veuillez donc s'il-vous-plait,
+                    renseigner tous ces champs normalement, afin que votre payement soit approuvé !</p>
+                <p class="text-left" style="font-size: 25px;">Total net à payer : <span id="card-price" style="font-size: 35px; color: yellowgreen!important;"></span></p>
+            </div>
+            <div class="col-md-5">
+                <div class="row">
+                    <div class="col-md-10">
+                        <h3 class="text-left">Formulaire de payement</h3>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <label class="label col-md-6 control-label">
+                        <span>
+                            <i class="fas fa-user-circle"></i>
+                        </span>
+                        <span class="">Noms et prénoms</span>
+                    </label><br>
+                    <div class="col-md-10">
+                        <input type="text" id="nom" class="form-control" placeholder="Client" required>
+                    </div>
+
+                </div>
+                <!--
+                <div class="row">
+                    <label class="label col-md-6 control-label">
+                        <span>
+                            <i class="fas fa-phone-alt"></i>&nbsp
+                        </span>
+                        Téléphone
+                    </label><br>
+                    <div class="col-md-10">
+                        <input type="number" id="tel" class="form-control" placeholder="+237 676764065" required>
+                    </div>
+                </div>-->
+                <div class="row">
+                    <label class="label col-md-6 control-label">
+                        <span>
+                            <i class="fas fa-envelope"></i>&nbsp
+                        </span>
+                        E-mail</label><br>
+                    <div class="col-md-10">
+                        <input type="email" id="email" class="form-control" placeholder="client@gmail.com" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="label col-md-6 control-label">
+                        <span>
+                            <i class="fas fa-map-marked-alt"></i>&nbsp
+                        </span>
+                        Ville de livraison</label><br>
+                    <div class="col-md-10">
+                        <input type="text" id="ville" class="form-control" placeholder="Bandjoun" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="label col-md-10 control-label">
+                        <span>
+                            <i class="fas fa-wallet"></i>&nbsp
+                        </span>
+                        Moyen de payement
+                    </label><br><br>
+                    <div class="col-md-10 form-pay">
+                        <input type="radio" name="pay" id="paymentOM" class="">
+                        <span class="">&nbspOrange Money</span>
+                    </div>
+                    <div class="col-md-10 form-pay">
+                        <input type="radio" name="pay" id="paymentPAY" class="">
+                        <span class="">&nbspMTN Momo</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <label class="label col-md-10 control-label">
+                        <span>
+                            <i class="fas fa-money-check"></i>&nbsp
+                        </span>
+                        Numéro du compte</label><br>
+                    <div class="col-md-10">
+                        <input type="number" id="pay-card" class="form-control" placeholder="697580960" required>
+                    </div>
+                </div><br><br>
+                <div class="row">
+                    <div class="col-md-10">
+                        <!--onclick="validation()"-->
+                        <input type="submit" id="btn1" onclick="validation()" class="form-control" value="Valider et payer...">
+                    </div>
+                    <div class="col-md-10">
+                        <a href="Home.html" style="text-decoration: none!important;">
+                            <input type="reset" id="btn2" class="form-control" value="Annuler...">
+                        </a>
+                    </div>
+                </div><br>
+
+            </div>
+        </div>
+    </div><br><br>
+    <section class="modal fade" id="payement" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" style="font-size: 35px;">Requête de payement...</h4>
+                    <i class="close fas fa-times" data-bs-dismiss="modal"></i>
+                </div>
+                <div class="modal-body">
+                    <p>Données bien entrées</p>
+                    <h3 class="text-muted">Payement initié, vérifiez votre mobile et tapez <span id="moyen"></span> pour confirmer...</h3>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">fermer..</button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</body>
+
+</html>
